@@ -1,0 +1,435 @@
+basePath: /api
+definitions:
+  entities.Account:
+    properties:
+      accepted:
+        type: boolean
+      category:
+        $ref: '#/definitions/entities.Category'
+      created_at:
+        type: string
+      data:
+        items:
+          $ref: '#/definitions/entities.Data'
+        type: array
+      deal:
+        $ref: '#/definitions/entities.Deal'
+      description:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      price:
+        type: number
+      view_type:
+        type: boolean
+    type: object
+  entities.AccountCreateFailure:
+    properties:
+      id:
+        type: string
+      index:
+        type: integer
+      message:
+        type: string
+    type: object
+  entities.Category:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
+  entities.Data:
+    properties:
+      account_id:
+        type: string
+      id:
+        type: integer
+      is_payment:
+        type: boolean
+      value:
+        type: string
+    type: object
+  entities.Deal:
+    properties:
+      account_id:
+        type: string
+      buyer_id:
+        type: integer
+      created_at:
+        type: string
+      data:
+        $ref: '#/definitions/entities.Data'
+      guarantor:
+        type: boolean
+      id:
+        type: integer
+      payment_status:
+        type: boolean
+      price:
+        type: number
+      wallet:
+        type: string
+    type: object
+  entities.RequestCreateAccount:
+    properties:
+      accepted:
+        type: boolean
+      category_id:
+        type: integer
+      data:
+        items:
+          $ref: '#/definitions/entities.Data'
+        type: array
+      description:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      price:
+        type: number
+      view_type:
+        type: boolean
+    type: object
+  entities.RequestCreateAccounts:
+    properties:
+      accounts:
+        items:
+          $ref: '#/definitions/entities.RequestCreateAccount'
+        type: array
+    type: object
+  entities.RequestUpdateAccount:
+    properties:
+      accepted:
+        type: boolean
+      data:
+        items:
+          $ref: '#/definitions/entities.Data'
+        type: array
+      description:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      price:
+        type: number
+      view_type:
+        type: boolean
+    type: object
+  entities.ResponseAcceptableTypeAccounts:
+    properties:
+      types:
+        items:
+          $ref: '#/definitions/entities.TypeAccount'
+        type: array
+    type: object
+  entities.ResponseAccountByID:
+    properties:
+      account:
+        $ref: '#/definitions/entities.Account'
+    type: object
+  entities.ResponseAllAccounts:
+    properties:
+      accounts:
+        items:
+          $ref: '#/definitions/entities.Account'
+        type: array
+      total:
+        type: integer
+    type: object
+  entities.ResponseCreateAccounts:
+    properties:
+      accounts:
+        items:
+          $ref: '#/definitions/entities.Account'
+        type: array
+      failed:
+        items:
+          $ref: '#/definitions/entities.AccountCreateFailure'
+        type: array
+      total:
+        type: integer
+    type: object
+  entities.ResponseDeleteAccountData:
+    properties:
+      status:
+        type: boolean
+    type: object
+  entities.ResponseGetAccountData:
+    properties:
+      data:
+        $ref: '#/definitions/entities.Data'
+    type: object
+  entities.ResponseGetDeals:
+    properties:
+      deals:
+        items:
+          $ref: '#/definitions/entities.Deal'
+        type: array
+      total:
+        type: integer
+    type: object
+  entities.ResponseUpdateAccount:
+    properties:
+      account:
+        $ref: '#/definitions/entities.UpdateAccount'
+    type: object
+  entities.TypeAccount:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
+  entities.UpdateAccount:
+    properties:
+      accepted:
+        type: boolean
+      category:
+        $ref: '#/definitions/entities.Category'
+      created_at:
+        type: string
+      data:
+        items:
+          $ref: '#/definitions/entities.Data'
+        type: array
+      description:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      price:
+        type: number
+      view_type:
+        type: boolean
+    type: object
+  handler.APIError:
+    properties:
+      message:
+        type: string
+    type: object
+info:
+  contact: {}
+  description: HTTP API for sellers accounts.
+  title: Sellers Accounts API
+  version: 1.0.0
+paths:
+  /acceptable-types:
+    get:
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entities.ResponseAcceptableTypeAccounts'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.APIError'
+      summary: List acceptable account types
+      tags:
+      - accounts
+  /accounts:
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Update account request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/entities.RequestUpdateAccount'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entities.ResponseUpdateAccount'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.APIError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.APIError'
+      summary: Update account
+      tags:
+      - accounts
+  /accounts/:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Create accounts request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/entities.RequestCreateAccounts'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/entities.ResponseCreateAccounts'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.APIError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.APIError'
+      summary: Create account
+      tags:
+      - accounts
+  /accounts/{id}:
+    get:
+      parameters:
+      - description: Account ID
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entities.ResponseAccountByID'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.APIError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/handler.APIError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.APIError'
+      summary: Get account by ID
+      tags:
+      - accounts
+  /accounts/all:
+    get:
+      description: Returns a paginated list of accounts.
+      parameters:
+      - description: Page size
+        in: query
+        name: limit
+        type: integer
+      - description: Page number (1-based)
+        in: query
+        name: page
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entities.ResponseAllAccounts'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.APIError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.APIError'
+      summary: List accounts
+      tags:
+      - accounts
+  /accounts/data/{id}:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: Data ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entities.ResponseDeleteAccountData'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.APIError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.APIError'
+      summary: delete account data
+      tags:
+      - data
+    get:
+      parameters:
+      - description: Data ID
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entities.ResponseGetAccountData'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.APIError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/handler.APIError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.APIError'
+      summary: Get account data by ID
+      tags:
+      - accounts
+  /deals:
+    get:
+      description: Returns a paginated list of deals.
+      parameters:
+      - description: Page size
+        in: query
+        name: limit
+        type: integer
+      - description: Page number (1-based)
+        in: query
+        name: page
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entities.ResponseGetDeals'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.APIError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.APIError'
+      summary: List deals
+      tags:
+      - deals
+schemes:
+- http
+swagger: "2.0"
