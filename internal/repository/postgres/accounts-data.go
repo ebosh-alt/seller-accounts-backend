@@ -8,7 +8,7 @@ import (
 )
 
 const (
-	sqlAccountDataByID   = `SELECT account_id, is_payment, value FROM accounts_data where id = $1`
+	sqlAccountDataByID   = `SELECT account_id, deal_id, is_payment, value FROM accounts_data where id = $1`
 	sqlDeleteAccountData = "DELETE FROM accounts_data WHERE id = $1"
 )
 
@@ -17,6 +17,7 @@ func (p *Postgres) AccountData(ctx context.Context, id int) (*entities.Data, err
 	data.ID = id
 	err := p.db.QueryRow(ctx, sqlAccountDataByID, id).Scan(
 		&data.AccountID,
+		&data.DealID,
 		&data.IsPayment,
 		&data.Value,
 	)

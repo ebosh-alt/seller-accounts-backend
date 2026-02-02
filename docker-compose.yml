@@ -1,0 +1,16 @@
+version: "3.9"
+
+services:
+  app:
+    build:
+      context: .
+    image: sellers-accounts-backend
+    environment:
+      - APP_ENV=prod
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./config/config.prod.yaml:/app/config/config.prod.yaml:ro
+    extra_hosts:
+      - "db_accounts:host-gateway"
+    restart: unless-stopped

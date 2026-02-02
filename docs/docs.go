@@ -369,6 +369,9 @@ const docTemplate = `{
                 "id": {
                     "type": "string"
                 },
+                "link": {
+                    "type": "string"
+                },
                 "name": {
                     "type": "string"
                 },
@@ -405,16 +408,19 @@ const docTemplate = `{
                 }
             }
         },
-        "entities.Data": {
-            "type": "object",
-            "properties": {
-                "account_id": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "is_payment": {
+		"entities.Data": {
+			"type": "object",
+			"properties": {
+				"account_id": {
+					"type": "string"
+				},
+				"deal_id": {
+					"type": "integer"
+				},
+				"id": {
+					"type": "integer"
+				},
+				"is_payment": {
                     "type": "boolean"
                 },
                 "value": {
@@ -437,16 +443,19 @@ const docTemplate = `{
                 "data": {
                     "$ref": "#/definitions/entities.Data"
                 },
-                "guarantor": {
-                    "type": "boolean"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "payment_status": {
-                    "type": "boolean"
-                },
-                "price": {
+				"guarantor": {
+					"type": "boolean"
+				},
+				"id": {
+					"type": "integer"
+				},
+				"commission": {
+					"type": "number"
+				},
+				"payment_status": {
+					"type": "boolean"
+				},
+				"price": {
                     "type": "number"
                 },
                 "wallet": {

@@ -20,12 +20,11 @@ func (u *Usecase) AllAccounts(ctx context.Context, req *entities.RequestAllAccou
 		u.log.Errorw("usecase.AllAccounts", "error", err)
 		return nil, mapRepoError(err)
 	}
-
-	//responseAccounts := make([]*entities.Account, 0, len(*accounts))
-	//for i := range *accounts {
-	//	responseAccounts = append(responseAccounts, &(*accounts)[i])
-	//}
-
+	botLink, err := u.cache.GetLink(ctx)
+	if err != nil {
+		u.log.Errorw("usecase.AllAccounts - bot link", "error", err)
+	}
+	accounts.InitLinks(botLink)
 	return &entities.ResponseAllAccounts{
 		Accounts: accounts,
 		Total:    total,

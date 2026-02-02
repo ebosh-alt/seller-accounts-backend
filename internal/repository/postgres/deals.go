@@ -11,16 +11,17 @@ const (
        d.id,
        ad.account_id,
        d.buyer_id,
-       d.data_id,
+       ad.id,
        d.price,
+       d.commission,
        d.wallet,
-       d.guarantor,
        d.payment_status,
+       d.guarantor,
        d.created_at,
        ad.is_payment,
        ad.value
 FROM deals AS d
-JOIN accounts_data ad ON ad.id = d.data_id
+LEFT JOIN accounts_data ad ON ad.deal_id = d.id
 ORDER BY d.created_at DESC
 LIMIT $1 OFFSET $2`
 )
@@ -40,9 +41,9 @@ func (p *Postgres) Deals(ctx context.Context, limit int, page int) (*[]entities.
 
 	for rows.Next() {
 		var deal entities.Deal
-		var dataID int
-		var isPayment bool
-		var value string
+		var dataID *int
+		var isPayment *bool
+		var value *string
 		err := rows.Scan(
 			&totalCount,
 			&deal.ID,
@@ -50,9 +51,10 @@ func (p *Postgres) Deals(ctx context.Context, limit int, page int) (*[]entities.
 			&deal.BuyerID,
 			&dataID,
 			&deal.Price,
+			&deal.Commission,
 			&deal.Wallet,
-			&deal.IsGuarantor,
 			&deal.PaymentStatus,
+			&deal.IsGuarantor,
 			&deal.CreatedAt,
 			&isPayment,
 			&value,
@@ -61,15 +63,27 @@ func (p *Postgres) Deals(ctx context.Context, limit int, page int) (*[]entities.
 			p.log.Errorw("Deals - rows.Scan", "error", err)
 			return nil, 0, ErrGetDeals
 		}
-		accountID := ""
-		if deal.AccountID != nil {
-			accountID = *deal.AccountID
-		}
-		deal.Data = &entities.Data{
-			ID:        dataID,
-			AccountID: accountID,
-			IsPayment: isPayment,
-			Value:     value,
+		if dataID != nil || value != nil || isPayment != nil {
+			accountID := ""
+			if deal.AccountID != nil {
+				accountID = *deal.AccountID
+			}
+			data := &entities.Data{
+				AccountID: accountID,
+			}
+			if dataID != nil {
+				data.ID = *dataID
+			}
+			if deal.ID != nil {
+				data.DealID = deal.ID
+			}
+			if isPayment != nil {
+				data.IsPayment = *isPayment
+			}
+			if value != nil {
+				data.Value = *value
+			}
+			deal.Data = data
 		}
 		deals = append(deals, deal)
 	}

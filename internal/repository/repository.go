@@ -18,7 +18,7 @@ type InterfaceLifecycle interface {
 }
 
 type ImplementationRepository interface {
-	AllAccounts(ctx context.Context, limit int, page int) (*[]entities.Account, int64, error)
+	AllAccounts(ctx context.Context, limit int, page int) (entities.Accounts, int64, error)
 	AcceptableTypesAccounts(ctx context.Context) (entities.AcceptableTypesAccounts, error)
 	Account(ctx context.Context, uid string) (*entities.Account, error)
 	CreateAccount(ctx context.Context, a *entities.Account) (*entities.Account, error)
@@ -28,6 +28,7 @@ type ImplementationRepository interface {
 	AccountData(ctx context.Context, id int) (*entities.Data, error)
 	DeleteAccountData(ctx context.Context, id int) error
 	Deals(ctx context.Context, limit int, page int) (*[]entities.Deal, int64, error)
+	BotLink(ctx context.Context) (string, error)
 }
 
 type InterfaceRepository interface {

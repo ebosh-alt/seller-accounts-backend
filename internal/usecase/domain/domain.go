@@ -8,18 +8,24 @@ import (
 	"sellers-accounts-backend/config"
 )
 
-type Usecase struct {
-	cfg  *config.Config
-	log  *zap.SugaredLogger
-	ctx  context.Context
-	repo repository.InterfaceRepository
+type Cache interface {
+	GetLink(ctx context.Context) (string, error)
 }
 
-func New(cfg *config.Config, log *zap.SugaredLogger, ctx context.Context, repo repository.InterfaceRepository) *Usecase {
+type Usecase struct {
+	cfg   *config.Config
+	log   *zap.SugaredLogger
+	ctx   context.Context
+	repo  repository.InterfaceRepository
+	cache Cache
+}
+
+func New(cfg *config.Config, log *zap.SugaredLogger, ctx context.Context, repo repository.InterfaceRepository, cache Cache) *Usecase {
 	return &Usecase{
-		cfg:  cfg,
-		log:  log,
-		ctx:  ctx,
-		repo: repo,
+		cfg:   cfg,
+		log:   log,
+		ctx:   ctx,
+		repo:  repo,
+		cache: cache,
 	}
 }

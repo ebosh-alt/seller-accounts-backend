@@ -9,11 +9,12 @@ import (
 	"sellers-accounts-backend/internal/usecase/domain"
 )
 
+type Cache = domain.Cache
+
 type InterfaceUsecase interface {
 	AllAccounts(ctx context.Context, req *entities.RequestAllAccounts) (*entities.ResponseAllAccounts, error)
 	AcceptableTypesAccounts(ctx context.Context) (*entities.ResponseAcceptableTypeAccounts, error)
 	Account(ctx context.Context, req *entities.RequestAccountByID) (*entities.ResponseAccountByID, error)
-	// CreateAccounts CreateAccount(ctx context.Context, req *entities.RequestCreateAccounts) (*entities.ResponseCreateAccounts, error)
 	CreateAccounts(ctx context.Context, req *entities.RequestCreateAccounts) (*entities.ResponseCreateAccounts, error)
 	UpdateAccount(ctx context.Context, req *entities.RequestUpdateAccount) (*entities.ResponseUpdateAccount, error)
 	DeactivateAccountsByName(ctx context.Context, req *entities.RequestDeactivateAccountsByName) (*entities.ResponseDeactivateAccounts, error)
@@ -22,6 +23,6 @@ type InterfaceUsecase interface {
 	Deals(ctx context.Context, req *entities.RequestGetDeals) (*entities.ResponseGetDeals, error)
 }
 
-func New(cfg *config.Config, log *zap.SugaredLogger, cxt context.Context, repo repository.InterfaceRepository) InterfaceUsecase {
-	return domain.New(cfg, log, cxt, repo)
+func New(cfg *config.Config, log *zap.SugaredLogger, cxt context.Context, repo repository.InterfaceRepository, cache Cache) InterfaceUsecase {
+	return domain.New(cfg, log, cxt, repo, cache)
 }

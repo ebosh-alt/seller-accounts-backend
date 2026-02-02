@@ -1,16 +1,23 @@
 package config
 
 import (
+	"fmt"
 	"log/slog"
+	"os"
 
 	"github.com/spf13/viper"
 )
 
 func NewConfig() (*Config, error) {
 	var cfg Config
+	env := os.Getenv("APP_ENV")
+	if env == "" {
+		env = "dev"
+	}
+	fmt.Println(fmt.Sprintf("APP_ENV=%s", env))
 	v := viper.New()
 	v.AddConfigPath("config")
-	v.SetConfigName("config.dev")
+	v.SetConfigName("config." + env)
 	v.SetConfigType("yml")
 	err := v.ReadInConfig()
 	if err != nil {

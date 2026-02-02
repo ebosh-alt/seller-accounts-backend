@@ -1,0 +1,17 @@
+.git
+.gitignore
+.idea
+.vscode
+bin
+build
+dist
+*.out
+*.test
+*.exe
+*.dll
+*.so
+coverage*
+vendor
+.cache
+config/.env
+config/*.yaml

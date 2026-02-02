@@ -365,6 +365,9 @@
                 "id": {
                     "type": "string"
                 },
+                "link": {
+                    "type": "string"
+                },
                 "name": {
                     "type": "string"
                 },
@@ -407,6 +410,9 @@
                 "account_id": {
                     "type": "string"
                 },
+                "deal_id": {
+                    "type": "integer"
+                },
                 "id": {
                     "type": "integer"
                 },
@@ -438,6 +444,9 @@
                 },
                 "id": {
                     "type": "integer"
+                },
+                "commission": {
+                    "type": "number"
                 },
                 "payment_status": {
                     "type": "boolean"

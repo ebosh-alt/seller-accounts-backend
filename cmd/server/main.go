@@ -6,6 +6,7 @@ import (
 	"context"
 	"os"
 	"os/signal"
+	"sellers-accounts-backend/internal/service"
 	"syscall"
 	"time"
 
@@ -26,7 +27,7 @@ import (
 // @version 1.0.0
 // @description HTTP API for sellers accounts.
 // @BasePath /api
-// @schemes http
+// @schemes https http
 func main() {
 	cfg, err := config.NewConfig()
 	if err != nil {
@@ -52,7 +53,8 @@ func main() {
 		}
 	}()
 
-	uc := usecase.New(cfg, log, ctx, repo)
+	botLinkService := cache.NewCache(repo, time.Duration(cfg.Cache.TTLSeconds))
+	uc := usecase.New(cfg, log, ctx, repo, botLinkService)
 
 	engine := gin.Default()
 	engine.Use(gin.Recovery())

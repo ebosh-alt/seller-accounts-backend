@@ -18,4 +18,5 @@ var (
 	ErrGetAccountData      = errors.New("error getting account data")
 	ErrGetDeals            = errors.New("error getting deals")
 	ErrScanDeals           = errors.New("error scanning deals")
+	ErrNotFoundBotLink     = errors.New("error found bot link")
 )

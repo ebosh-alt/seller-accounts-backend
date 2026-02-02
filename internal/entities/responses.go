@@ -1,7 +1,7 @@
 package entities
 
 type ResponseAllAccounts struct {
-	Accounts *[]Account `json:"accounts"`
+	Accounts []*Account `json:"accounts"`
 	Total    int64      `json:"total"`
 }
 

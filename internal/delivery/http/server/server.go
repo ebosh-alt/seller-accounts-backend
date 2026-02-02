@@ -44,12 +44,23 @@ func New(log *zap.SugaredLogger, cfg *config.Config, engine *gin.Engine, handler
 }
 
 func (s *Server) OnStart() error {
+	if s.cfg.Server.TLS.Enabled {
+		if err := ensureTLSFiles(s.cfg.Server.TLS, s.log); err != nil {
+			return err
+		}
+	}
+
 	s.mdl.Register()
 	s.handlers.RegisterRoutes()
 	go func() {
-		s.log.Infow("server started", "host", s.cfg.Server.Host, "port", s.cfg.Server.Port)
+		s.log.Infow("server started", "host", s.cfg.Server.Host, "port", s.cfg.Server.Port, "tls", s.cfg.Server.TLS.Enabled)
 
-		err := s.http.ListenAndServe()
+		var err error
+		if s.cfg.Server.TLS.Enabled {
+			err = s.http.ListenAndServeTLS(s.cfg.Server.TLS.CertFile, s.cfg.Server.TLS.KeyFile)
+		} else {
+			err = s.http.ListenAndServe()
+		}
 
 		if err != nil && !errors.Is(err, http.ErrServerClosed) {
 			s.log.Errorw("failed to serve", "error", err.Error())
